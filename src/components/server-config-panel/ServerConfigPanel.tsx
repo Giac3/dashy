@@ -15,6 +15,7 @@ import {
 } from "@tabler/icons-react";
 import { invoke } from "@tauri-apps/api/core";
 import { useNavigate } from "react-router";
+import { Tooltip } from "../tooltip/Tooltip";
 
 interface ServerConfigPanelProps {
   server?: TServer;
@@ -261,7 +262,13 @@ export const ServerConfigPanel = ({
             ) : testResult === "success" ? (
               <IconCircleCheckFilled className="w-4 h-4 text-green mr-1" />
             ) : testResult?.type === "error" ? (
-              <IconAlertTriangleFilled className="w-4 h-4 text-yellow mr-1" />
+              <Tooltip content={testResult.message} defaultOpen>
+                <IconAlertTriangleFilled
+                  data-tooltip-target="tooltip-test-error"
+                  data-tooltip-trigger="click"
+                  className="w-4 h-4 text-yellow mr-1"
+                />
+              </Tooltip>
             ) : (
               <IconTestPipe className="w-4 h-4 mr-1" />
             )}
