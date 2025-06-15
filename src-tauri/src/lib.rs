@@ -1,15 +1,11 @@
-use argon2::{
-    password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
-    Argon2,
+use tauri::{
+    async_runtime::{spawn, Mutex},
+    Manager,
 };
-use base64::{prelude::BASE64_STANDARD, Engine};
-use rand::Rng;
-use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
-use tauri::{async_runtime::Mutex, Manager};
-type Db = Pool<Postgres>;
+use tokio_postgres::{Client, NoTls};
 
 struct AppState {
-    db: Option<Db>,
+    client: Option<Client>,
 }
 
 #[tauri::command]
@@ -18,16 +14,13 @@ async fn execute_query(
     query: &str,
 ) -> Result<String, String> {
     let state = state.lock().await;
-    let pool = match state.db {
-        Some(ref db) => db,
+
+    let client = match state.client {
+        Some(ref client) => client,
         None => {
-            return Err("No database pool".to_string());
+            return Err("No client".to_string());
         }
     };
-
-    if pool.is_closed() {
-        return Err("Connection closed".to_string());
-    }
 
     let formatted_query = format!(
         "SELECT
@@ -38,31 +31,29 @@ async fn execute_query(
     );
     println!("Executing query: {}", formatted_query);
 
-    let row: (String,) = sqlx::query_as(&formatted_query)
-        .fetch_one(pool)
+    let row = client
+        .query(&formatted_query, &[])
         .await
-        .unwrap();
+        .map_err(|e| e.to_string())?;
 
-    return Ok(row.0);
+    return Ok(row[0].get::<_, String>(0).to_string());
 }
 
 #[tauri::command]
 async fn connect(state: tauri::State<'_, Mutex<AppState>>, url: &str) -> Result<String, String> {
     let mut state = state.lock().await;
 
-    if let Some(db) = &state.db {
-        if !db.is_closed() {
-            db.close().await;
-        }
-    }
-
-    let db = PgPoolOptions::new()
-        .max_connections(1)
-        .connect(url)
+    let (client, connection) = tokio_postgres::connect(url, NoTls)
         .await
-        .unwrap();
+        .map_err(|e| e.to_string())?;
 
-    state.db.replace(db.clone());
+    spawn(async move {
+        if let Err(e) = connection.await {
+            eprintln!("connection error: {}", e);
+        }
+    });
+
+    state.client.replace(client);
 
     return Ok("Connected to database".to_string());
 }
@@ -82,7 +73,7 @@ pub fn run() {
             app.handle()
                 .plugin(tauri_plugin_stronghold::Builder::with_argon2(&salt_path).build())?;
             tauri::async_runtime::block_on(async move {
-                app.manage(Mutex::new(AppState { db: None }));
+                app.manage(Mutex::new(AppState { client: None }));
             });
             Ok(())
         })

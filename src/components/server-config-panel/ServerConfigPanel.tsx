@@ -11,7 +11,7 @@ import {
   IconTrash,
   IconX,
   IconCircleCheckFilled,
-  IconCircleXFilled,
+  IconAlertTriangleFilled,
 } from "@tabler/icons-react";
 import { invoke } from "@tauri-apps/api/core";
 import { useNavigate } from "react-router";
@@ -37,6 +37,13 @@ const colorOptions = [
   "#f43f5e",
 ];
 
+type TTestResult =
+  | "success"
+  | {
+      type: "error";
+      message: string;
+    };
+
 export const ServerConfigPanel = ({
   server,
   isOpen,
@@ -49,9 +56,7 @@ export const ServerConfigPanel = ({
   const [showPassword, setShowPassword] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [testResult, setTestResult] = useState<"success" | "error" | null>(
-    null
-  );
+  const [testResult, setTestResult] = useState<TTestResult | null>(null);
 
   useEffect(() => {
     if (server) {
@@ -74,19 +79,15 @@ export const ServerConfigPanel = ({
     setIsTesting(true);
     setTestResult(null);
 
-    const timeout = setTimeout(() => {
-      setIsTesting(false);
-      setTestResult("error");
-    }, 20000);
     try {
       await invoke("connect", { url: server.url });
-      clearTimeout(timeout);
       setTestResult("success");
     } catch (error) {
-      clearTimeout(timeout);
-      setTestResult("error");
+      setTestResult({
+        type: "error",
+        message: String(error),
+      });
     } finally {
-      clearTimeout(timeout);
       setIsTesting(false);
     }
   };
@@ -259,8 +260,8 @@ export const ServerConfigPanel = ({
               <IconLoader2 className="w-4 h-4 animate-spin mr-1" />
             ) : testResult === "success" ? (
               <IconCircleCheckFilled className="w-4 h-4 text-green mr-1" />
-            ) : testResult === "error" ? (
-              <IconCircleXFilled className="w-4 h-4 text-red mr-1" />
+            ) : testResult?.type === "error" ? (
+              <IconAlertTriangleFilled className="w-4 h-4 text-yellow mr-1" />
             ) : (
               <IconTestPipe className="w-4 h-4 mr-1" />
             )}

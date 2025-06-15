@@ -13,6 +13,7 @@ export const useQuery = (query: string) => {
             const response: string = await invoke("execute_query", { query });
             setData(JSON.parse(response));
         } catch (err) {
+            console.error("Error executing query:", err);
             setError(`Error: ${err}`);
             setLoading(false)
         } finally {
