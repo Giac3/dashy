@@ -1,0 +1,270 @@
+@import "tailwindcss";
+
+/* Dark Theme Color Palette */
+:root {
+  /* Base dark theme colors */
+  --dark-bg-primary: #121212;
+  --dark-bg-secondary: #1e1e1e;
+  --dark-bg-tertiary: #2d2d2d;
+  --dark-surface: #282828;
+
+  /* Text colors */
+  --dark-text-primary: #f5f5f5;
+  --dark-text-secondary: #b3b3b3;
+  --dark-text-muted: #757575;
+
+  /* Bright colors for charts/accents */
+  --accent-blue: #00b8ff;
+  --accent-green: #4cff4c;
+  --accent-purple: #bf5aff;
+  --accent-pink: #ff49db;
+  --accent-yellow: #ffdd00;
+  --accent-orange: #ff8c00;
+  --accent-red: #ff5252;
+  --accent-teal: #00e5c7;
+
+  /* UI element colors */
+  --dark-border: #424242;
+  --dark-card: #2c2c2c;
+  --dark-hover: #3d3d3d;
+}
+
+@font-face {
+  font-family: "RobotoMono";
+  src: url("/assets/fonts/RobotoMonoNerdFont-Regular.ttf") format("truetype"); /* Replace with your font path and format */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@theme {
+  --color-mint-500: oklch(0.72 0.11 178);
+
+  /* Base dark theme colors */
+  --color-primary: #121212;
+  --color-secondary: #1e1e1e;
+  --color-tertiary: #2d2d2d;
+  --color-surface: #282828;
+
+  /* Text colors */
+  --color-text-primary: #f5f5f5;
+  --color-text-secondary: #b3b3b3;
+  --color-text-muted: #757575;
+
+  /* Bright colors for charts/accents */
+  --color-blue: #00b8ff;
+  --color-green: #4cff4c;
+  --color-purple: #bf5aff;
+  --color-pink: #ff49db;
+  --color-yellow: #ffdd00;
+  --color-orange: #ff8c00;
+  --color-red: #ff5252;
+  --color-teal: #00e5c7;
+
+  /* UI element colors */
+  --color-border: #424242;
+  --color-card: #2c2c2c;
+  --color-hover: #3d3d3d;
+}
+
+/* Dark Theme Utility Classes */
+.dark-mode {
+  background-color: var(--dark-bg-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark-card {
+  background-color: var(--dark-surface);
+  border: 1px solid var(--dark-border);
+}
+
+.dark-nav {
+  background-color: var(--dark-bg-secondary);
+}
+
+/* Chart Color Classes */
+.chart-blue {
+  color: var(--accent-blue);
+}
+.chart-green {
+  color: var(--accent-green);
+}
+.chart-purple {
+  color: var(--accent-purple);
+}
+.chart-pink {
+  color: var(--accent-pink);
+}
+.chart-yellow {
+  color: var(--accent-yellow);
+}
+.chart-orange {
+  color: var(--accent-orange);
+}
+.chart-red {
+  color: var(--accent-red);
+}
+.chart-teal {
+  color: var(--accent-teal);
+}
+
+/* For SVG charts */
+.fill-blue {
+  fill: var(--accent-blue);
+}
+.fill-green {
+  fill: var(--accent-green);
+}
+.fill-purple {
+  fill: var(--accent-purple);
+}
+.fill-pink {
+  fill: var(--accent-pink);
+}
+.fill-yellow {
+  fill: var(--accent-yellow);
+}
+.fill-orange {
+  fill: var(--accent-orange);
+}
+.fill-red {
+  fill: var(--accent-red);
+}
+.fill-teal {
+  fill: var(--accent-teal);
+}
+
+html {
+  font-family: Roboto, monospace;
+  background-color: var(--dark-bg-primary);
+}
+body {
+  font-family: Roboto, monospace;
+  color: var(--dark-text-primary);
+}
+.react-grid-layout {
+  position: relative;
+  transition: height 200ms ease;
+}
+.react-grid-item {
+  transition: all 200ms ease;
+  transition-property: left, top;
+}
+.react-grid-item.cssTransforms {
+  transition-property: transform;
+}
+.react-grid-item.resizing {
+  z-index: 1;
+  will-change: width, height;
+}
+
+.react-grid-item.react-draggable-dragging {
+  transition: none;
+  z-index: 3;
+  will-change: transform;
+}
+
+.react-grid-item.react-grid-placeholder {
+  border-radius: 4px;
+  background: var(--accent-teal);
+  opacity: 0.2;
+  transition-duration: 100ms;
+  z-index: 2;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.react-grid-item > .react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+}
+
+.react-grid-item:hover > .react-resizable-handle::after {
+  border-right: 2px solid var(--dark-text-secondary);
+  border-bottom: 2px solid var(--dark-text-secondary);
+}
+
+.react-grid-item > .react-resizable-handle::after {
+  content: "";
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 5px;
+  height: 5px;
+}
+
+.react-grid-item:not(.react-grid-placeholder) {
+  overflow: hidden;
+  background: var(--dark-card);
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.window-header {
+  background-color: var(--dark-bg-secondary);
+  display: flex;
+  justify-content: space-between;
+  height: 25px;
+}
+
+.logo-container {
+  overflow: hidden;
+}
+
+.app-name {
+  color: var(--dark-text-primary);
+  font-size: 14px;
+  margin-bottom: 5px;
+  padding-left: 8px;
+}
+
+.actions-container {
+  display: flex;
+  padding-top: 3px;
+}
+
+.icon {
+  color: var(--dark-text-primary);
+  font-size: 20px;
+  padding-top: 5px;
+}
+
+.window-button-style {
+  background-color: transparent;
+  border: none;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin: 0;
+  transition: background-color 150ms ease;
+}
+
+.window-controls-icon {
+  pointer-events: none;
+  user-select: none;
+  width: 20px;
+  height: 20px;
+  transition: fill 150ms ease;
+}
+
+.settings-window:hover {
+  background-color: var(--accent-orange);
+}
+
+.close-window:hover {
+  background-color: var(--accent-red);
+}
+
+.settings-window:focus {
+  outline: none;
+}
+
+.close-window:focus {
+  outline: none;
+}
