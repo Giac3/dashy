@@ -31,14 +31,14 @@ export const useServerManager = () => {
                 setLoading(false);
             }
         })();
-    })
+    }, [])
 
     const addServer = async (server: TServer) => {
          try {
                 const store = client.getStore()
                 const newServers = [...servers, server]
-                await insertRecord(store, "servers", JSON.stringify(newServers));
                 setServers(newServers);
+                await insertRecord(store, "servers", JSON.stringify(newServers));
                 await stronghold.save();
             } catch (error) {
                 setError(`Error saving server: ${error}`);
@@ -52,8 +52,8 @@ export const useServerManager = () => {
          try {
                 const store = client.getStore()
                 const newServers = servers.filter(s => s.id !== id)
-                await insertRecord(store, "servers", JSON.stringify(newServers));
                 setServers(newServers);
+                await insertRecord(store, "servers", JSON.stringify(newServers));
                 await stronghold.save();
             } catch (error) {
                 setError(`Error saving server: ${error}`);
@@ -67,8 +67,8 @@ export const useServerManager = () => {
          try {
                 const store = client.getStore()
                 const newServers = servers.map(s => s.id === server.id ? server : s)
-                await insertRecord(store, "servers", JSON.stringify(newServers));
                 setServers(newServers);
+                await insertRecord(store, "servers", JSON.stringify(newServers));
                 await stronghold.save();
             } catch (error) {
                 setError(`Error saving server: ${error}`);

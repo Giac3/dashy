@@ -79,7 +79,6 @@ const GridLayoutsProvider = ({ children }: TGridLayoutsProviderProps) => {
         `${serverId}-default-gridLayouts`,
         JSON.stringify(gridLayouts)
       );
-      console.log("saved");
       await stronghold.save();
     } catch (error) {
       console.error(`Error saving grid layouts: ${error}`);
