@@ -64,11 +64,17 @@ pub fn run() {
         .plugin(tauri_plugin_clipboard_manager::init())
         .invoke_handler(tauri::generate_handler![execute_query, connect])
         .setup(|app| {
-            let salt_path = app
+            let app_local_data_dir = app
                 .path()
                 .app_local_data_dir()
-                .expect("could not resolve app local data path")
-                .join("salt.txt");
+                .expect("could not resolve app local data path");
+
+            if !app_local_data_dir.exists() {
+                std::fs::create_dir_all(&app_local_data_dir)
+                    .expect("Failed to create app local data directory");
+            }
+
+            let salt_path = app_local_data_dir.join("salt.txt");
 
             app.handle()
                 .plugin(tauri_plugin_stronghold::Builder::with_argon2(&salt_path).build())?;
