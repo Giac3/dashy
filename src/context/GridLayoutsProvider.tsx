@@ -52,7 +52,10 @@ const GridLayoutsProvider = ({ children }: TGridLayoutsProviderProps) => {
         setClient(client);
         await stronghold.save();
         const store = client.getStore();
-        const gridLayouts = await getRecord(store, `${serverId}-gridLayouts`);
+        const gridLayouts = await getRecord(
+          store,
+          `${serverId}-default-gridLayouts`
+        );
         if (!gridLayouts) {
           setGridLayouts([]);
           setLoading(false);
