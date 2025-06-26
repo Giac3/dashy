@@ -15,22 +15,6 @@ const Widget = ({ widget, aspect }: TWidgetSwitcherProps) => {
   const [showWidgetSettings, setShowWidgetSettings] = React.useState(false);
   const { data, error, loading, rerun } = useQuery(widget.query);
 
-  if (!widget.query) {
-    return (
-      <div className="w-full h-full flex items-center justify-center aspect-[3]">
-        <span className="text-text-secondary">No query to run</span>
-      </div>
-    );
-  }
-
-  if (loading)
-    return (
-      <div className="w-full h-full flex items-center justify-center aspect-[3]">
-        <Loading />
-      </div>
-    );
-
-  if (error) return <div>Error: {error}</div>;
   return (
     <div className="w-full h-full flex group select-none">
       <div className="text-center text-xs p-2 left-2 top-2 overflow-y-scroll hidden z-20 absolute group-hover:block bg-secondary rounded-[4px] max-w-[400px] overflow-ellipsis whitespace-nowrap shadow-md border-border border-[1px]">
@@ -49,7 +33,21 @@ const Widget = ({ widget, aspect }: TWidgetSwitcherProps) => {
           </Button>
         </div>
       </div>
-      <WidgetSwitcher data={data} widget={widget} aspect={aspect} />
+      {!widget.query ? (
+        <div className="w-full h-full flex items-center justify-center aspect-[3]">
+          <span className="text-text-secondary">No query to run</span>
+        </div>
+      ) : loading ? (
+        <div className="w-full h-full flex items-center justify-center aspect-[3]">
+          <Loading />
+        </div>
+      ) : error ? (
+        <div className="w-full h-full flex items-center justify-center aspect-[3]">
+          <p>{error}</p>
+        </div>
+      ) : (
+        <WidgetSwitcher data={data} widget={widget} aspect={aspect} />
+      )}
     </div>
   );
 };
