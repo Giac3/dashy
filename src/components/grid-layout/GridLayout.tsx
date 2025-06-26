@@ -25,7 +25,7 @@ const GridLayout = () => {
       {gridLayouts.map((item) => (
         <div key={item.i}>
           <Widget
-            key={item.i}
+            key={item.widget.id}
             widget={item.widget}
             aspect={(() => {
               return item.w - item.h;

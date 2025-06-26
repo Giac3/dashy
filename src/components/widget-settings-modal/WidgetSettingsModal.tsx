@@ -31,8 +31,8 @@ import { Toggle } from "../toggle";
 import { Editor } from "../Editor";
 import { Loading } from "../loading";
 
-type TAddWidgetModalProps = {
-  open: boolean;
+type TWidgetSettingsModalProps = {
+  widget: TWidgetWithMetadata;
   onSave: (widget: TWidgetWithMetadata) => void;
   onClose: () => void;
 };
@@ -56,6 +56,7 @@ const scalarTypeIconMap: Record<ScalarType, ReactNode> = {
 };
 
 const getWidgetFromConfig = (
+  id: string,
   title: string,
   description: string,
   query: string,
@@ -75,7 +76,7 @@ const getWidgetFromConfig = (
         query,
         title,
         description,
-        id: crypto.randomUUID(),
+        id,
         primaryKey: [],
       };
     case WidgetType.CHART:
@@ -91,7 +92,7 @@ const getWidgetFromConfig = (
         },
         title,
         description,
-        id: crypto.randomUUID(),
+        id,
       };
     case WidgetType.SCALAR:
       return {
@@ -103,34 +104,61 @@ const getWidgetFromConfig = (
         },
         title,
         description,
-        id: crypto.randomUUID(),
+        id,
       };
     default:
       throw new Error("Invalid widget type");
   }
 };
 
-const AddWidgetModal = ({ open, onSave, onClose }: TAddWidgetModalProps) => {
-  const [title, setTitle] = useState<string>("Default title");
-  const [description, setDescription] = useState<string>("");
-  const [query, setQuery] = useState<string>("");
-  const [xAxisKey, setxAxisKey] = useState<string>();
-  const [plotKeys, setPlotKeys] = useState<string[]>([]);
-  const [savedQuery, setSavedQuery] = useState<string>("");
-  const [widgetType, setWidgetType] = useState<WidgetType>();
-  const [chartType, setChartType] = useState<ChartType>(ChartType.LINE);
-  const [showVerticalGridLines, setShowVerticalGridLines] =
-    useState<boolean>(false);
+const WidgetSettingsModal = ({
+  widget,
+  onSave,
+  onClose,
+}: TWidgetSettingsModalProps) => {
+  const [title, setTitle] = useState<string>(widget.title);
+  const [description, setDescription] = useState<string>(widget.description);
+  const [query, setQuery] = useState<string>(widget.query);
+
+  const [xAxisKey, setxAxisKey] = useState<string | undefined>(
+    widget.type === WidgetType.CHART ? widget.settings.xAxisKey : undefined
+  );
+  const [plotKeys, setPlotKeys] = useState<string[]>(
+    widget.type === WidgetType.CHART ? widget.settings.plotKeys || [] : []
+  );
+  const [savedQuery, setSavedQuery] = useState<string>(widget.query);
+  const [widgetType, setWidgetType] = useState<WidgetType>(widget.type);
+  const [chartType, setChartType] = useState<ChartType>(
+    widget.type === WidgetType.CHART
+      ? widget.settings.chartType
+      : ChartType.LINE
+  );
+  const [showVerticalGridLines, setShowVerticalGridLines] = useState<boolean>(
+    widget.type === WidgetType.CHART
+      ? widget.settings.verticalGridLines || false
+      : false
+  );
   const [showHorizontalGridLines, setShowHorizontalGridLines] =
-    useState<boolean>(false);
-  const [scalarType, setScalarType] = useState<ScalarType>();
+    useState<boolean>(
+      widget.type === WidgetType.CHART
+        ? widget.settings.horizontalGridLines || false
+        : false
+    );
+  const [scalarType, setScalarType] = useState<ScalarType | undefined>(
+    widget.type === WidgetType.SCALAR ? widget.settings.scalarType : undefined
+  );
   const [showPositiveNegativeColor, setShowPositiveNegativeColor] =
-    useState<boolean>(true);
+    useState<boolean>(
+      widget.type === WidgetType.SCALAR
+        ? widget.settings.showPositiveNegativeColor
+        : true
+    );
   const { data, error, loading } = useQuery(savedQuery);
 
   const handleSave = () => {
     onSave(
       getWidgetFromConfig(
+        widget.id,
         title,
         description,
         savedQuery,
@@ -148,8 +176,6 @@ const AddWidgetModal = ({ open, onSave, onClose }: TAddWidgetModalProps) => {
 
   const showDataConfiguration =
     widgetType === WidgetType.CHART || widgetType === WidgetType.TABLE;
-
-  if (!open) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -186,6 +212,7 @@ const AddWidgetModal = ({ open, onSave, onClose }: TAddWidgetModalProps) => {
               {widgetType ? (
                 <WidgetSwitcher
                   widget={getWidgetFromConfig(
+                    widget.id,
                     title,
                     description,
                     savedQuery,
@@ -470,4 +497,4 @@ const AddWidgetModal = ({ open, onSave, onClose }: TAddWidgetModalProps) => {
   );
 };
 
-export { AddWidgetModal };
+export { WidgetSettingsModal };

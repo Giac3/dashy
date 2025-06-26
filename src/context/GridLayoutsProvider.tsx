@@ -1,4 +1,10 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { TGridLayout, TGridLayouts } from "../types";
 import { Loading } from "../components/loading";
 
@@ -8,7 +14,7 @@ import { Client, Stronghold } from "@tauri-apps/plugin-stronghold";
 
 type TGridLayoutsContext = {
   gridLayouts: TGridLayouts;
-  setGridLayouts: (gridLayouts: TGridLayouts) => void;
+  setGridLayouts: Dispatch<SetStateAction<TGridLayouts | null>>;
   addGridLayout: (newLayout: TGridLayout) => void;
   removeGridLayout: (layoutId: string) => void;
   updateGridLayout: (updatedLayout: TGridLayout) => void;

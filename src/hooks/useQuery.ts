@@ -15,6 +15,7 @@ export const useQuery = (query: string) => {
         } catch (err) {
             console.error("Error executing query:", err);
             setError(`Error: ${err}`);
+            setData([])
             setLoading(false)
         } finally {
             setLoading(false);
