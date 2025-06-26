@@ -22,6 +22,8 @@ async fn execute_query(
         }
     };
 
+    let _ = client.query(query, &[]).await.map_err(|e| e.to_string())?;
+
     let formatted_query = format!(
         "SELECT
             json_agg(row_to_json(sub))::text
