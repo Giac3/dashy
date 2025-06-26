@@ -1,8 +1,8 @@
 import React from "react";
 
 type TButtonProps = {
-  children: React.ReactNode;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  children?: React.ReactNode;
   onMouseDown?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   type?: "success" | "error" | "default";
